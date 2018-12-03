@@ -1,0 +1,28 @@
+dataset_name:  HTRU_2
+data_url:  https://archive.ics.uci.edu/ml/datasets/HTRU2
+number of attributes:  9
+number of labels:  2
+number of samples:  17898
+ 
+__________________________test_result_____________________________
+ 
+____________________t result between class labels i and j_______________________
+ 
+___________________________
+t_value between  0  and  1 :  [ 121.78231655   52.23266693 -173.30126146 -134.69680861  -58.53693181  -75.50665768   56.7991272    35.88934127]
+ 
+ 
+ 
+__________________________p result between class labels i and j_____________________________
+ 
+___________________________
+p_value between  0  and  1 :  [0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 1.87680761e-272]
+
+
+
+__________________p value Summary_____________________
+ 
+cross all labels, mean and std of the p value for all attribute pairs are:
+mean:  [0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 0.00000000e+000 1.87680761e-272]
+ std:  [0. 0. 0. 0. 0. 0. 0. 0.]
+ 

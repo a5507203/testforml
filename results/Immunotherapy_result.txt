@@ -1,0 +1,28 @@
+dataset_name:  Immunotherapy
+data_url:  https://archive.ics.uci.edu/ml/datasets/Immunotherapy+Dataset
+number of attributes:  90
+number of labels:  2
+number of samples:  90
+ 
+__________________________test_result_____________________________
+ 
+____________________t result between class labels i and j_______________________
+ 
+___________________________
+t_value between  1  and  0 :  [ 0.17667866 -1.79872759 -3.6333495  -0.44289718  0.78505528  0.40703271 -0.29351448]
+ 
+ 
+ 
+__________________________p result between class labels i and j_____________________________
+ 
+___________________________
+p_value between  1  and  0 :  [8.60166791e-01 7.54902102e-02 4.69958125e-04 6.58926932e-01 4.34529608e-01 6.84972318e-01 7.69820034e-01]
+
+
+
+__________________p value Summary_____________________
+ 
+cross all labels, mean and std of the p value for all attribute pairs are:
+mean:  [8.60166791e-01 7.54902102e-02 4.69958125e-04 6.58926932e-01 4.34529608e-01 6.84972318e-01 7.69820034e-01]
+ std:  [0. 0. 0. 0. 0. 0. 0.]
+ 
