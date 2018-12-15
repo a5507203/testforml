@@ -5,6 +5,7 @@ import sys
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
 from sklearn import svm
+
 from sklearn.model_selection import ShuffleSplit
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import LabelEncoder
@@ -13,9 +14,12 @@ from numbers import Number
 from scipy import stats
 import random
 import matplotlib.pyplot as plt
-
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 from collections import defaultdict
-
+import os
+import errno
+from textwrap import wrap
 
 class Metamorphic_Test:
 
@@ -31,9 +35,15 @@ class Metamorphic_Test:
     def select_classifier(self, classifierType, df):
         attributes, labels = self.convertDataFormat(df)
         if classifierType == 'svm':
-            return svm.SVC(kernel='linear', C=1).fit(attributes,labels)
+            return svm.SVC(C=1.0, kernel='linear').fit(attributes,labels)
+        elif classifierType == 'linearSVM':
+            return svm.LinearSVC(random_state=0, tol=1e-5).fit(attributes,labels)
         elif classifierType == 'knn':
             return KNeighborsClassifier(n_neighbors=1).fit(attributes,labels)
+        elif classifierType == 'gaussianNB':
+            return GaussianNB(priors=None, var_smoothing=1e-09).fit(attributes,labels)
+        elif classifierType == 'multinomialNB':
+            return MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True).fit(attributes,labels)
         else:
             return None
 
@@ -106,10 +116,11 @@ class Metamorphic_Test:
         df1 = self.getAllInstanceBylabel(label1).copy()
         df2 = self.getAllInstanceBylabel(label2).copy()
       
-
+        # print(len(df1))
+        # print(df2)
         repeatTime = len(sigmas)*repeatForEverySigma
         # print(df2)
-        #self.t_test(df1,label1,df2,label2, attributeIndex)
+
         i = 0
         predictions = np.empty(shape = [len(df2),repeatTime], dtype=int)
         for sigma in sigmas:
@@ -125,7 +136,7 @@ class Metamorphic_Test:
 
         results = []
         for i in predictions:
-            result = ((i == 2).sum())
+            result = ((i == label2).sum())
             results.append(1-float(result)/float(repeatTime) )
         return(results)
       
@@ -241,27 +252,34 @@ class Metamorphic_Test:
         return classifier.predict(data)
 
 
+def createDictionary(path):
 
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 if __name__ == "__main__":
 
     
     name = 'sensor_readings_24'
+    name = 'Frogs_MFCCs'
     data_url = './data_and_results/'+name+'/'+name+'.data'
 
+    classifierType = 'gaussianNB'
+    classifierType = 'multinomialNB'
+    classifierType = 'linearSVM'
     classifierType = 'svm'
-    # classifierType = 'knn'
+    classifierType = 'knn'
     label1 = 1
     label2 = 2
-    attributeIndex = 1
-    sigmas = [0.5,1,1.5,2]
-    p_value = 7.19713968e-001
-    repeatForEverySigma = 50
+    attributeIndex = 14
+    sigmas = [0.1,0.2,0.3]
+    p_value = 3.67748857e-064
+    repeatForEverySigma = 100
 
     np.set_printoptions(linewidth = 500)
 
     #write to file
-    sys.stdout = open(name+'_t_test_result.txt','wt')
+    #sys.stdout = open(name+'_t_test_result.txt','wt')
 
     print('dataset_name: ',name)
     print ('data_url: ',data_url)
@@ -269,20 +287,32 @@ if __name__ == "__main__":
     # # select classifier
 
     metamorphic_Test = Metamorphic_Test(url = data_url, classifierType = classifierType)
-    # metamorphic_Test.tTests()
+    #metamorphic_Test.tTests()
 
     mr_result = metamorphic_Test.metamorphic_Test_continious_attr(label1 = label1, label2 = label2, attributeIndex = attributeIndex, mu = 0, sigmas=sigmas,repeatForEverySigma=repeatForEverySigma)
     loocv_result = metamorphic_Test.lOOCV(label2=label2)
-    print (loocv_result)
-    print(mr_result)
 
-#### draw graph
+
+    #### write test result to file
+
+    createDictionary('./data_and_results/'+name+'/'+classifierType)
+
+    fileName = './data_and_results/'+name+'/'+classifierType+'/'+name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'mr_and_loocv_result.txt'
+    with open(fileName, 'a') as out:
+        out.write(str(mr_result) + '\n'  +str(loocv_result) + '\n' )
+
+    #### draw graph
     plt.plot(mr_result, loocv_result, 'ro')
     plt.xlabel('mr_violation_rate')
     plt.ylabel('loocv_result(1=correct,0=misclassifed)')
-    plt.title('p_value= ' +str(p_value)+', mean = 0, sigmas = '+str(sigmas)+', instance'+str(len(mr_result)))
-    plt.savefig(name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'.png')
+    # title = ax.set_title("\n".join(wrap("Some really really long long long title I really really need - and just can't - just can't - make it any - simply any - shorter - at all.", 60)))
+
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.8)
+    plt.title("\n".join(wrap('p_value= ' +str(p_value)+', mean = 0, sigmas = '+str(sigmas)+', #instance= '+str(len(mr_result)), 60)))
+    plt.savefig('./data_and_results/'+name+'/'+classifierType+'/'+name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'.png')
    
  
 
+    
 
