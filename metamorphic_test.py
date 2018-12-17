@@ -14,8 +14,7 @@ from numbers import Number
 from scipy import stats
 import random
 import matplotlib.pyplot as plt
-from sklearn.naive_bayes import GaussianNB
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import MultinomialNB, ComplementNB, GaussianNB
 from collections import defaultdict
 import os
 import errno
@@ -43,7 +42,9 @@ class Metamorphic_Test:
         elif classifierType == 'gaussianNB':
             return GaussianNB(priors=None, var_smoothing=1e-09).fit(attributes,labels)
         elif classifierType == 'multinomialNB':
-            return MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True).fit(attributes,labels)
+            return MultinomialNB(alpha=1.0, class_prior=None).fit(attributes,labels)
+        elif classifierType == 'complementNB':
+            return ComplementNB().fit(attributes,labels)        
         else:
             return None
 
@@ -95,7 +96,7 @@ class Metamorphic_Test:
     def lOOCV(self, label2):
         predictions = []
         indices = self.df.index[self.df['class'] == label2].tolist()
-
+        count = 0
         for index in indices:
             testDf = self.df.iloc[[index]].copy()
             trainingDf = self.df.drop(self.df.index[[index]])
@@ -104,11 +105,13 @@ class Metamorphic_Test:
             classifier = self.select_classifier(self.classifierType,trainingDf)
             testAttr, testLabel = self.convertDataFormat(testDf)
             prediction = self.predict(classifier, testAttr)[0]
+     
             if prediction != label2:
+                count += 1
                 predictions.append(0)
             else:
                 predictions.append(1)
-        return predictions
+        return predictions,count
             # print(b)
 
     def metamorphic_Test_continious_attr(self, label1, label2, attributeIndex, mu = 0, sigmas = [1,2,3,4,5,6], repeatForEverySigma = 20 ):
@@ -116,8 +119,8 @@ class Metamorphic_Test:
         df1 = self.getAllInstanceBylabel(label1).copy()
         df2 = self.getAllInstanceBylabel(label2).copy()
       
-        # print(len(df1))
-        # print(df2)
+        print(len(df1))
+        print(len(df2))
         repeatTime = len(sigmas)*repeatForEverySigma
         # print(df2)
 
@@ -135,10 +138,14 @@ class Metamorphic_Test:
                 i+=1
 
         results = []
+        count = 0
         for i in predictions:
             result = ((i == label2).sum())
-            results.append(1-float(result)/float(repeatTime) )
-        return(results)
+            error = 1-float(result)/float(repeatTime)
+            if(error >= 0.5):
+                count+=1
+            results.append(error)
+        return results,count
       
       
     # def swapAttribute(self, label1, label2, attributeIndex):
@@ -257,62 +264,105 @@ def createDictionary(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-if __name__ == "__main__":
+def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sigmas,classifierTypes =  ['knn','gaussianNB','svm']):
 
-    
-    name = 'sensor_readings_24'
-    name = 'Frogs_MFCCs'
+    p_value = str('{:.8e}'.format(p_value))
     data_url = './data_and_results/'+name+'/'+name+'.data'
 
-    classifierType = 'gaussianNB'
-    classifierType = 'multinomialNB'
-    classifierType = 'linearSVM'
-    classifierType = 'svm'
-    classifierType = 'knn'
-    label1 = 1
-    label2 = 2
-    attributeIndex = 14
-    sigmas = [0.1,0.2,0.3]
-    p_value = 3.67748857e-064
-    repeatForEverySigma = 100
+    for classifierType in classifierTypes:
 
-    np.set_printoptions(linewidth = 500)
+        print('dataset_name: ',name)
+        print ('data_url: ',data_url)
+        print ('classifierType: ',classifierType)
 
-    #write to file
-    #sys.stdout = open(name+'_t_test_result.txt','wt')
+        figurePath = './data_and_results/'+name+'/'+p_value+'/'+classifierType
+        
+        createDictionary(figurePath)
 
-    print('dataset_name: ',name)
-    print ('data_url: ',data_url)
+        metamorphic_Test = Metamorphic_Test(url = data_url, classifierType = classifierType)
+      
+        mr_result,larger_violation_number = metamorphic_Test.metamorphic_Test_continious_attr(label1 = label1, label2 = label2, attributeIndex = attributeIndex, mu = 0, sigmas=sigmas,repeatForEverySigma=repeatForEverySigma)
+        
+        loocv_result,error = metamorphic_Test.lOOCV(label2=label2)
 
-    # # select classifier
+        confidence = 0
+        #histogram = []
+        for i in range( len(mr_result)):
+            if(mr_result[i] >= 0.5 and loocv_result[i] == 0):
+                confidence+=1
 
-    metamorphic_Test = Metamorphic_Test(url = data_url, classifierType = classifierType)
-    #metamorphic_Test.tTests()
+            # if(loocv_result[i] == 0):
+            #     histogram.append(mr_result[i])
 
-    mr_result = metamorphic_Test.metamorphic_Test_continious_attr(label1 = label1, label2 = label2, attributeIndex = attributeIndex, mu = 0, sigmas=sigmas,repeatForEverySigma=repeatForEverySigma)
-    loocv_result = metamorphic_Test.lOOCV(label2=label2)
+        confidence = float(confidence)/float(larger_violation_number+0.000000000000000000001)
+        #### write test result to file
+  
+        fileName = figurePath +'/'+name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'mr_and_loocv_result.txt'
+        with open(fileName, 'a') as out:
+            out.write(str(mr_result) + '\n'  +str(loocv_result) + '\n' )
+
+        #### draw graph
+        plt.plot(mr_result, loocv_result, 'ro')
+        plt.xlabel('mr_violation_rate')
+        plt.ylabel('loocv_result (1=correct, 0=misclassifed)')
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.8)
+        instanceNumber = len(mr_result)
+        # plt.hist(histogram)
+        plt.title("\n".join(wrap('p_value= ' +p_value+', mean = 0, sigmas = '+str(sigmas)+', #instance= '+str(instanceNumber)+','+'\n'+'(MRVRate>0.5 and misclassified)/(MRVRate>0.5) = '+str('{:.3e}'.format(confidence)) +', error_rate= '+str('{:.3e}'.format(float(error)/float(instanceNumber))), 60)))
+        plt.savefig(figurePath+'/'+name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'.png')
+        plt.clf()
+        plt.cla()
+        plt.close()
+        
+
+np.set_printoptions(linewidth = 500)
+
+experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[0.1,0.2],p_value=8.17932970e-01,repeatForEverySigma = 100)
+experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[0.1,0.2,0.3],p_value=8.17932970e-01,repeatForEverySigma = 100)
+
+experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[0.1,0.2],p_value=0,repeatForEverySigma = 100)
+experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[0.1,0.2,0.3],p_value=0,repeatForEverySigma = 100)
 
 
-    #### write test result to file
+experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[0.5,1,1.5,2],p_value=0.719713968,repeatForEverySigma = 100)
+experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[0.5,1,1.5],p_value=0.719713968,repeatForEverySigma = 100)
 
-    createDictionary('./data_and_results/'+name+'/'+classifierType)
+experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[0.5,1,2],p_value=4.28062996e-143,repeatForEverySigma = 100)
+experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[1,2,3],p_value=4.28062996e-143,repeatForEverySigma = 100)
 
-    fileName = './data_and_results/'+name+'/'+classifierType+'/'+name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'mr_and_loocv_result.txt'
-    with open(fileName, 'a') as out:
-        out.write(str(mr_result) + '\n'  +str(loocv_result) + '\n' )
 
-    #### draw graph
-    plt.plot(mr_result, loocv_result, 'ro')
-    plt.xlabel('mr_violation_rate')
-    plt.ylabel('loocv_result(1=correct,0=misclassifed)')
-    # title = ax.set_title("\n".join(wrap("Some really really long long long title I really really need - and just can't - just can't - make it any - simply any - shorter - at all.", 60)))
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.3,0.5],p_value=0.847388064,repeatForEverySigma = 100, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.1,0.3],p_value=0.847388064,repeatForEverySigma = 100, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
 
-    plt.tight_layout()
-    plt.subplots_adjust(top=0.8)
-    plt.title("\n".join(wrap('p_value= ' +str(p_value)+', mean = 0, sigmas = '+str(sigmas)+', #instance= '+str(len(mr_result)), 60)))
-    plt.savefig('./data_and_results/'+name+'/'+classifierType+'/'+name+'_label'+str(label1)+'_'+str(label2)+'_attribute'+str(attributeIndex)+'_'+classifierType+'_sigmas = '+str(sigmas)+'.png')
-   
- 
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.3,0.5],p_value=1.95516988e-33,repeatForEverySigma = 100, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.1,0.3],p_value=1.95516988e-33,repeatForEverySigma = 100, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
 
-    
+
+
+experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[1,2,3],p_value=3.85967572e-001,repeatForEverySigma = 100)
+experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[2,3,4],p_value=3.85967572e-001,repeatForEverySigma = 100)
+
+experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[1,2,3],p_value=5.74096537e-224,repeatForEverySigma = 100)
+experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[2,3,4],p_value=5.74096537e-224,repeatForEverySigma = 100)
+
+
+
+experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[0.5,1,1.5],p_value=2.73837542e-59,repeatForEverySigma = 100)
+experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[0.2,0.3,0.7],p_value=2.73837542e-59,repeatForEverySigma = 100)
+
+experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=2,sigmas=[0.5,1,1.5],p_value=9.50588987e-01,repeatForEverySigma = 100)
+experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=2,sigmas=[0.2,0.3,0.7],p_value=9.50588987e-01,repeatForEverySigma = 100)
+
+
+
+experiment(name = 'iris', label1=1,label2=2,attributeIndex=1,sigmas=[0.5,1,1.5],p_value=1.81910042e-03,repeatForEverySigma = 100, classifierTypes = ['knn','complementNB','svm'])
+experiment(name = 'iris', label1=1,label2=2,attributeIndex=1,sigmas=[0.5,0.75,1],p_value=1.81910042e-03,repeatForEverySigma = 100, classifierTypes = ['knn','complementNB','svm'])
+
+experiment(name = 'iris', label1=1,label2=2,attributeIndex=2,sigmas=[0.5,1,1.5],p_value=3.17881955e-22,repeatForEverySigma = 100, classifierTypes = ['knn','complementNB','svm'])
+experiment(name = 'iris', label1=1,label2=2,attributeIndex=2,sigmas=[0.5,0.75,1],p_value=3.17881955e-22,repeatForEverySigma = 100, classifierTypes = ['knn','complementNB','svm'])
+
+experiment(name = 'iris', label1=1,label2=2,attributeIndex=0,sigmas=[0.5,1,1.5],p_value=1.72485630e-07,repeatForEverySigma = 100, classifierTypes = ['knn','complementNB','svm'])
+experiment(name = 'iris', label1=1,label2=2,attributeIndex=0,sigmas=[0.5,0.75,1],p_value=1.72485630e-07,repeatForEverySigma = 100, classifierTypes = ['knn','complementNB','svm'])
+        
 
