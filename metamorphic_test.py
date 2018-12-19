@@ -479,10 +479,10 @@ np.set_printoptions(linewidth = 500)
 # experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[2],p_value=4.28062996e-143,repeatForEverySigma = 200)
 
 
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.5],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[1],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.5],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[1],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
 
 # experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.2],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
 # experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.5],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
@@ -490,10 +490,10 @@ experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[2],p_value
 # experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[2],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
 
 
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[0.2],p_value=3.85967572e-001,repeatForEverySigma = 200)
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[0.5],p_value=3.85967572e-001,repeatForEverySigma = 200)
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[1],p_value=3.85967572e-001,repeatForEverySigma = 200)
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[2],p_value=3.85967572e-001,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[0.2],p_value=3.85967572e-001,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[0.5],p_value=3.85967572e-001,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[1],p_value=3.85967572e-001,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[2],p_value=3.85967572e-001,repeatForEverySigma = 200)
 
 # experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[0.2],p_value=5.74096537e-224,repeatForEverySigma = 200)
 # experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[0.5],p_value=5.74096537e-224,repeatForEverySigma = 200)

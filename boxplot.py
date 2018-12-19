@@ -7,7 +7,7 @@ def stringToList(line):
     a = line.replace('[','').replace(']','').split(',')
     return a
 
-dir = 'data_and_results/data_banknote_authentication'
+dir = 'data_and_results/'
 fileNames = []
 for root, dirs, files in os.walk(dir):
     for file in files:
@@ -32,9 +32,15 @@ for fileName in fileNames:
                 errors.append(float(rates[i]))
 
         # [32,2]
+        if 'dnn' in fileName:
+            title = 'MR violation rate vs CV'
+            xlabel = 'CV prediction'
+        else:
+            title = 'MR violation rate vs LOOCV'
+            xlabel = 'LOOCV prediction'
         plt.boxplot([corrects,errors], labels=['Yes','No'],showmeans=True, sym='s',meanline=True)
-        plt.title('MR violation rate vs LOOCV', fontsize=10)
-        plt.xlabel('LOOCV prediction')
+        plt.title(title, fontsize=10)
+        plt.xlabel(xlabel)
         plt.ylabel('MR violation rate')
         plt.savefig(fileName.replace(".txt","")+".svg", format="svg")
         plt.clf()

@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 import csv
 import pandas as pd
 import sys
@@ -20,11 +21,16 @@ import os
 import errno
 from textwrap import wrap
 
+
+
+
 class Metamorphic_Test:
 
     def __init__(self, url= './data/iris.data', classifierType = 'knn'):
-        
+        self.xmax = None
+        self.dumpyCounter = 0
         self.df, self.indices, self.uniqueLabels = self.getData(url)
+    
         self.classifierType = classifierType
         self.classifier = self.select_classifier(classifierType, self.df)
         self.result_dic = defaultdict(dict)
@@ -46,16 +52,84 @@ class Metamorphic_Test:
         elif classifierType == 'complementNB':
             return ComplementNB().fit(attributes,labels)       
         elif classifierType == 'dnn':
-            return self.createDNNClassifier()
+            return self.createDNNClassifier(attributes, labels)
         else:
             return None
 
-
-    def createDNNClassifier():
+    def onehotEncoding(self, y):
+        a = np.array(y)
+        b = np.zeros((a.size, y.max()+1))
+        b[np.arange(a.size),a] = 1
+        return b
+        
+    def normalInputs(self, x):
+        x = np.array(x)
+    
+        if(self.dumpyCounter == 0):
+            self.xmax = x.max(axis=0)
+        x_normed = x / self.xmax
+        
+        return x_normed
+        
+    def createDNNClassifier(self,x_train, y_train):
         # classifier = tf.estimator.DNNClassifier()
         # y_train = self. X_train = train['label'], train[['feature1', 'feature2']].fillna(0)
-        print(df.take(self.indices[0:-1], axis=1))
-        feature_columns = [tf.feature_column.numeric_column(key = key) for key in X_train.columns]
+       
+        self.sess = tf.Session()
+        x_train = self.normalInputs(x_train)
+        y_train = np.array(y_train)
+        print(y_train.shape)
+
+        interval = 50
+        epoch = 100000
+        hidden_layer_nodes = 8
+
+        self.inputs = tf.placeholder(shape=[None, x_train.shape[1]], dtype=tf.float32)
+        self.label = tf.placeholder(tf.float32, [None])
+
+        self.onehot_label = tf.one_hot(tf.cast(self.label, tf.int32), len(self.uniqueLabels))
+
+        self.hidden = tf.layers.dense(self.inputs, 3, tf.nn.tanh)
+        self.hidden2 = tf.layers.dense(self.hidden, 3, tf.nn.tanh)
+
+        self.output = tf.layers.dense(self.hidden2,len(self.uniqueLabels), tf.nn.relu)
+        self.soft_output = tf.nn.softmax(self.output)
+        self.loss = -tf.reduce_sum(self.onehot_label * tf.log(self.soft_output))
+        self.optimizer = tf.train.GradientDescentOptimizer(0.00003)
+        self.prediction = tf.cast(tf.argmax(self.soft_output,1), tf.int8)
+        self.is_correct = tf.equal(tf.argmax(self.soft_output,1), tf.argmax(self.onehot_label,1))
+        self.accuracy = tf.reduce_mean(tf.cast(self.is_correct, tf.float32))
+        self.train_step = self.optimizer.minimize(self.loss)
+
+
+        # Initialize variables
+        init = tf.global_variables_initializer()
+        self.sess.run(init)
+
+        prev_acc = 0.0
+        print('Training the model...')
+        i = 1
+        count = 0
+        for _ in range (50000):
+        
+            self.sess.run(self.train_step, feed_dict={self.inputs: x_train, self.label: y_train})
+            if i % interval == 0:
+                acc = self.sess.run(self.accuracy, feed_dict={self.inputs: x_train, self.label: y_train})
+                if acc <= 0.4:
+                    count += 1
+                else:
+                    count = 0
+                if acc>0.67:
+                    break
+                    #pass
+                if count == 15:
+                    print('restart')
+                    count = 0
+                    self.sess.run(init)
+                prev_acc = acc
+                print(acc)
+            i += 1
+        return None
 
     def getData(self, url ):
         df = pd.read_csv(url)
@@ -112,13 +186,24 @@ class Metamorphic_Test:
            
             classifier = self.select_classifier(self.classifierType,trainingDf)
             testAttr, testLabel = self.convertDataFormat(testDf)
-            prediction = self.predict(classifier, testAttr)[0]
-     
-            if prediction != label2:
-                count += 1
-                predictions.append(0)
+            if(self.classifierType != 'dnn'):
+                prediction = self.predict(classifier, testAttr)[0]
+                if prediction != label2:
+                    count += 1
+                    predictions.append(0)
+                else:
+                    predictions.append(1)
             else:
-                predictions.append(1)
+                x_test = self.normalInputs(testAttr)
+                y_test = np.array(testLabel)
+                prediction = self.sess.run(self.is_correct, feed_dict={self.inputs: x_test, self.label: y_test})
+                if prediction != 1:
+                    count += 1
+                    predictions.append(0)
+                else:
+                    predictions.append(1)
+     
+
         return predictions,count
             # print(b)
 
@@ -144,18 +229,31 @@ class Metamorphic_Test:
               
                 df3[df3.columns[attributeIndex]] += np.random.normal(mu, sigma*std, len(df3))
                 attri, label = self.convertDataFormat(df3)
-                prediction = self.predict(self.classifier,attri)
+                if( self.classifierType != 'dnn' ):
+                    prediction = self.predict(self.classifier,attri)
+          
+                else:
+                    x_test = self.normalInputs(attri)
+                    y_test = np.array(label)
+                    prediction = self.sess.run(self.is_correct, feed_dict={self.inputs: x_test, self.label: y_test})
+                  
+
                 predictions[:,i] = prediction
                 i+=1
 
         results = []
         count = 0
+        if(self.classifierType == 'dnn' ):
+            cond = True
+        else:
+            cond = label2
         for i in predictions:
-            result = ((i == label2).sum())
+            result = ((i == cond).sum())
             error = 1-float(result)/float(repeatTime)
             if(error >= 0.5):
                 count+=1
             results.append(error)
+        print(results)
         return results,count,std
       
       
@@ -291,7 +389,7 @@ def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sig
         createDictionary(figurePath)
 
         metamorphic_Test = Metamorphic_Test(url = data_url, classifierType = classifierType)
-      
+   
         mr_result,larger_violation_number,std = metamorphic_Test.metamorphic_Test_continious_attr(label1 = label1, label2 = label2, attributeIndex = attributeIndex, mu = 0, sigmas=sigmas,repeatForEverySigma=repeatForEverySigma)
         
         loocv_result,error = metamorphic_Test.lOOCV(label2=label2)
@@ -328,4 +426,15 @@ def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sig
         
 
 np.set_printoptions(linewidth = 500)
+
+# experiment(name = 'iris', label1=1,label2=2,attributeIndex=0,sigmas=[1.5],p_value=1.72485630e-07,repeatForEverySigma = 200, classifierTypes = ['dnn'])
+
+
+
+
+
+
+
+
+# experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=2,sigmas=[2],p_value=9.50588987e-01,repeatForEverySigma = 200, classifierTypes = ['dnn'])
 
