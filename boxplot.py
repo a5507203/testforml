@@ -7,7 +7,7 @@ def stringToList(line):
     a = line.replace('[','').replace(']','').split(',')
     return a
 
-dir = 'data_and_results/Frogs_MFCCs'
+dir = 'data_and_results/sensor_readings_24'
 fileNames = []
 for root, dirs, files in os.walk(dir):
     for file in files:

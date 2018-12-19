@@ -267,7 +267,7 @@ def createDictionary(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sigmas,classifierTypes =  ['knn','gaussianNB','svm']):
+def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sigmas,classifierTypes =  ['gaussianNB','svm']):
 
     p_value = str('{:.8e}'.format(p_value))
     data_url = './data_and_results/'+name+'/'+name+'.data'
@@ -457,37 +457,37 @@ np.set_printoptions(linewidth = 500)
 
 
 
-experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[0.2],p_value=8.17932970e-01,repeatForEverySigma = 200)
-experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[0.5],p_value=8.17932970e-01,repeatForEverySigma = 200)
-experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[1],p_value=8.17932970e-01,repeatForEverySigma = 200)
-experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[2],p_value=8.17932970e-01,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[0.2],p_value=8.17932970e-01,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[0.5],p_value=8.17932970e-01,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[1],p_value=8.17932970e-01,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=0,label2=2,attributeIndex=14,sigmas=[2],p_value=8.17932970e-01,repeatForEverySigma = 200)
 
-experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[0.2],p_value=0,repeatForEverySigma = 200)
-experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[0.5],p_value=0,repeatForEverySigma = 200)
-experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[1],p_value=0,repeatForEverySigma = 200)
-experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[2],p_value=0,repeatForEverySigma = 200)
-
-
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[0.2],p_value=0.719713968,repeatForEverySigma = 200)
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[0.5],p_value=0.719713968,repeatForEverySigma = 200)
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[1],p_value=0.719713968,repeatForEverySigma = 200)
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[2],p_value=0.719713968,repeatForEverySigma = 200)
-
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[0.2],p_value=4.28062996e-143,repeatForEverySigma = 200)
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[0.5],p_value=4.28062996e-143,repeatForEverySigma = 200)
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[1],p_value=4.28062996e-143,repeatForEverySigma = 200)
-experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[2],p_value=4.28062996e-143,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[0.2],p_value=0,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[0.5],p_value=0,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[1],p_value=0,repeatForEverySigma = 200)
+# experiment(name = 'Frogs_MFCCs', label1=3,label2=2,attributeIndex=3,sigmas=[2],p_value=0,repeatForEverySigma = 200)
 
 
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.5],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[1],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[0.2],p_value=0.719713968,repeatForEverySigma = 200)
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[0.5],p_value=0.719713968,repeatForEverySigma = 200)
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[1],p_value=0.719713968,repeatForEverySigma = 200)
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=1,sigmas=[2],p_value=0.719713968,repeatForEverySigma = 200)
 
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.2],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.5],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[1],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
-experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[2],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[0.2],p_value=4.28062996e-143,repeatForEverySigma = 200)
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[0.5],p_value=4.28062996e-143,repeatForEverySigma = 200)
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[1],p_value=4.28062996e-143,repeatForEverySigma = 200)
+# experiment(name = 'sensor_readings_24', label1=1,label2=2,attributeIndex=17,sigmas=[2],p_value=4.28062996e-143,repeatForEverySigma = 200)
+
+
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[0.5],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[1],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+experiment(name = 'wine', label1=1,label2=2,attributeIndex=10,sigmas=[2],p_value=0.847388064,repeatForEverySigma = 200, classifierTypes = ['gaussianNB','complementNB','svm'])
+
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.2],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[0.5],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[1],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
+# experiment(name = 'wine', label1=1,label2=2,attributeIndex=0,sigmas=[2],p_value=1.95516988e-33,repeatForEverySigma = 200, classifierTypes = ['knn','gaussianNB','complementNB','svm'])
 
 
 experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[0.2],p_value=3.85967572e-001,repeatForEverySigma = 200)
@@ -495,17 +495,17 @@ experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeInd
 experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[1],p_value=3.85967572e-001,repeatForEverySigma = 200)
 experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=3,sigmas=[2],p_value=3.85967572e-001,repeatForEverySigma = 200)
 
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[0.2],p_value=5.74096537e-224,repeatForEverySigma = 200)
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[0.5],p_value=5.74096537e-224,repeatForEverySigma = 200)
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[1],p_value=5.74096537e-224,repeatForEverySigma = 200)
-experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[2],p_value=5.74096537e-224,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[0.2],p_value=5.74096537e-224,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[0.5],p_value=5.74096537e-224,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[1],p_value=5.74096537e-224,repeatForEverySigma = 200)
+# experiment(name = 'data_banknote_authentication', label1=0,label2=1,attributeIndex=0,sigmas=[2],p_value=5.74096537e-224,repeatForEverySigma = 200)
 
 
 
-experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[0.2],p_value=2.73837542e-59,repeatForEverySigma = 200)
-experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[0.5],p_value=2.73837542e-59,repeatForEverySigma = 200)
-experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[1],p_value=2.73837542e-59,repeatForEverySigma = 200)
-experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[2],p_value=2.73837542e-59,repeatForEverySigma = 200)
+# experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[0.2],p_value=2.73837542e-59,repeatForEverySigma = 200)
+# experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[0.5],p_value=2.73837542e-59,repeatForEverySigma = 200)
+# experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[1],p_value=2.73837542e-59,repeatForEverySigma = 200)
+# experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=1,sigmas=[2],p_value=2.73837542e-59,repeatForEverySigma = 200)
 
 experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=2,sigmas=[0.2],p_value=9.50588987e-01,repeatForEverySigma = 200)
 experiment(name = 'avila-tr', label1=1,label2=3,attributeIndex=2,sigmas=[0.5],p_value=9.50588987e-01,repeatForEverySigma = 200)
