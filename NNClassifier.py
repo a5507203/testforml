@@ -110,7 +110,7 @@ class Metamorphic_Test:
         print('Training the model...')
         i = 1
         count = 0
-        for _ in range (50000):
+        for _ in range (20000):
         
             self.sess.run(self.train_step, feed_dict={self.inputs: x_train, self.label: y_train})
             if i % interval == 0:
