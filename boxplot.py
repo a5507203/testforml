@@ -39,10 +39,11 @@ for fileName in fileNames:
             title = 'MR violation rate vs LOOCV'
             xlabel = 'LOOCV prediction'
         plt.boxplot([corrects,errors], labels=['Yes','No'],showmeans=True, sym='s',meanline=True)
-        plt.title(title, fontsize=10)
-        plt.xlabel(xlabel)
-        plt.ylabel('MR violation rate')
-        plt.savefig(fileName.replace(".txt","")+".svg", format="svg")
+        
+        plt.title(title, fontsize=15)
+        plt.xlabel(xlabel, fontsize=15)
+        plt.ylabel('MR violation rate', fontsize=15)
+        plt.savefig(fileName.replace(".txt","").replace(" = ","_").replace('[','').replace(']','')+".pdf", format="pdf")
         plt.clf()
         plt.cla()
         plt.close()
