@@ -47,6 +47,8 @@ class Metamorphic_Test:
             return ComplementNB().fit(attributes,labels)        
         elif classifierType == '3nn':
             return KNeighborsClassifier(n_neighbors=3).fit(attributes,labels)
+        elif classifierType == '5nn':
+            return KNeighborsClassifier(n_neighbors=5).fit(attributes,labels)
         elif classifierType == '7nn':
             return KNeighborsClassifier(n_neighbors=7).fit(attributes,labels)
         elif classifierType == '10nn':
@@ -273,7 +275,7 @@ def createDictionary(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sigmas,classifierTypes =  ['3nn','7nn','10nn']):
+def experiment(name,label1,label2,repeatForEverySigma,attributeIndex,p_value,sigmas,classifierTypes =  ['5nn']):
 
     p_value = str('{:.8e}'.format(p_value))
     data_url = './data_and_results/'+name+'/'+name+'.data'
