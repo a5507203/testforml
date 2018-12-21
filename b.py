@@ -13,7 +13,7 @@ def stringToList(line):
     return a
 
 
-dir = 'data_and_results/wine/8.47388064e-01/svm/'
+dir = 'data_and_results/sensor_readings_24/7.19713968e-01/10nn/'
 fileNames = []
 for root, dirs, files in os.walk(dir):
     for file in files:
@@ -71,7 +71,7 @@ t = plt.text(3.57, 0.7, '(2) n~N(0,1\u03C3\u00B2)', fontproperties=font0,**align
 t = plt.text(3.57, 0.5, '(3) n~N(0,4\u03C3\u00B2)', fontproperties=font0,**alignment2)
 
 title = 'MRVR vs LOOCV'
-xlabel = 'LOOCV predictions (error: 0.028)'
+xlabel = 'LOOCV predictions (error: 0.140)'
 fig.subplots_adjust(bottom=0.2)
 plt.title(title, fontsize=15)
 plt.xlabel(xlabel, fontsize=15)
@@ -80,8 +80,9 @@ ax.xaxis.set_label_coords(0.5, -0.15)
 
 
 # plt.show()
-plt.savefig(dir+'wine_label1_2_attribute10_svm_new_combined_bar_plots.svg', format="svg")
-plt.savefig(dir+'wine_label1_2_attribute10_svm_new_combined_bar_plots.pdf', format="pdf")
+
+plt.savefig(dir+'sensor_readings_24_label1_2_attribute1_10nn_new_combined_bar_plots.svg', format="svg")
+plt.savefig(dir+'sensor_readings_24_label1_2_attribute1_10nn_new_combined_bar_plots.pdf', format="pdf")
 plt.clf()
 plt.cla()
 plt.close()
