@@ -1,0 +1,28 @@
+dataset_name:  data_banknote_authentication
+data_url:  ./data_and_results/data_banknote_authentication/data_banknote_authentication.data
+number of attributes:  4
+number of labels:  2
+number of samples:  1372
+ 
+__________________________test_result_____________________________
+ 
+____________________t result between class labels i and j_______________________
+ 
+___________________________
+t_value between  0  and  1 :  [38.94389131 18.37637466 -5.84119159  0.86723054]
+ 
+ 
+ 
+__________________________p result between class labels i and j_____________________________
+ 
+___________________________
+p_value between  0  and  1 :  [5.74096537e-224 1.37205114e-067 6.46552630e-009 3.85967572e-001]
+
+
+
+__________________p value Summary_____________________
+ 
+cross all labels, mean and std of the p value for all attribute pairs are:
+mean:  [5.74096537e-224 1.37205114e-067 6.46552630e-009 3.85967572e-001]
+ std:  [0. 0. 0. 0.]
+ 

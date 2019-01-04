@@ -7,7 +7,7 @@ def stringToList(line):
     a = line.replace('[','').replace(']','').split(',')
     return a
 
-dir = 'new_data_and_results/'
+dir = 'data_and_results_ovr/'
 fileNames = []
 for root, dirs, files in os.walk(dir):
     for file in files:
@@ -43,7 +43,7 @@ for fileName in fileNames:
         plt.title(title, fontsize=15)
         plt.xlabel(xlabel, fontsize=15)
         plt.ylabel('MR violation rate', fontsize=15)
-        plt.savefig(fileName.replace(".txt","").replace(" = ","_").replace('[','').replace(']','')+".svg", format="svg")
+        plt.savefig(fileName.replace(".txt","").replace(" = ","_").replace('[','').replace(']','')+".png", format="png")
         plt.clf()
         plt.cla()
         plt.close()

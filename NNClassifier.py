@@ -177,7 +177,6 @@ class Metamorphic_Test:
 
     def CV(self, label2):
         predictions = []
-        indices = self.df.index[self.df['class'] == label2].tolist()
         count = 0
         attri, label = self.convertDataFormat(self.testDf)
         x_test = self.normalInputs(attri)
